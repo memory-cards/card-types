@@ -1,0 +1,54 @@
+{
+  "name": "card-types",
+  "version": "1.0.0",
+  "description": "Structure of a repo:",
+  "main": "index.js",
+  "scripts": {
+    "precommit": "lint-staged",
+    "lint:eslint": "eslint --quiet .",
+    "lint:json5": "json5 -v ./**/*.json5",
+    "lint:md": "prettier --list-different ./**/*.md",
+    "lint:js": "prettier --list-different ./**/*.{json,json5}",
+    "test": "yarn run lint:md && yarn run lint:js && yarn run lint:eslint && yarn run lint:json5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/memory-cards/card-types.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/memory-cards/card-types/issues"
+  },
+  "lint-staged": {
+    "*.{md}": [
+      "prettier --insert-pragma --write",
+      "git add"
+    ],
+    "*.{js}": [
+      "prettier --write",
+      "eslint --fix --quiet",
+      "git add"
+    ],
+    "*.{json,json5}": [
+      "prettier --write",
+      "json5 -v",
+      "git add"
+    ]
+  },
+  "homepage": "https://github.com/memory-cards/card-types#readme",
+  "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "husky": "^1.1.4",
+    "lint-staged": "^8.0.5",
+    "prettier": "^1.15.2"
+  },
+  "dependencies": {
+    "json5": "^2.1.0"
+  }
+}

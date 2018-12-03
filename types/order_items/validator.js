@@ -15,4 +15,4 @@ module.exports = obj => {
     console.log('Errors:', v.validate(obj, schema).errors);
   }
   return v.validate(obj, schema).errors.length === 0;
-}
+};

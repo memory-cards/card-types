@@ -1,7 +1,7 @@
-require('json5/lib/register');
-const { Validator } = require('jsonschema');
+require("json5/lib/register");
+const { Validator } = require("jsonschema");
 
-const schema = require('./json-schema.json');
+const schema = require("./json-schema.json");
 
 const v = new Validator();
 

@@ -1,19 +1,19 @@
 // @todo: move this code to common stuff
 
-require('json5/lib/register');
-const AnkiExport = require('anki-apkg-export').default;
+require("json5/lib/register");
+const AnkiExport = require("anki-apkg-export").default;
 
-const fs = require('fs');
-const validator = require('./validator');
-const index = require('./index');
-const example = require('./example.json5');
+const fs = require("fs");
+const validator = require("./validator");
+const index = require("./index");
+const example = require("./example.json5");
 
-const typeName = 'choose_options';
+const typeName = "choose_options";
 
 console.log(`Test run from ${typeName}`);
 
 // Example should be valid
-console.log('Example should be valid: ', validator(example));
+console.log("Example should be valid: ", validator(example));
 
 // provide example deck with card
 const apkg = new AnkiExport(`${typeName} example deck`);
@@ -23,7 +23,7 @@ apkg.addCard(front, back, tags);
 apkg
   .save()
   .then(zip => {
-    fs.writeFileSync(`${__dirname}/ ${typeName}.apkg`, zip, 'binary');
+    fs.writeFileSync(`${__dirname}/ ${typeName}.apkg`, zip, "binary");
     console.log(`Package has been generated: ${typeName}.pkg`);
   })
   .catch(err => console.log(err.stack || err));

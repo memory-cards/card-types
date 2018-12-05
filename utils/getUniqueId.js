@@ -1,4 +1,4 @@
-module.exports = (prefix = "xxx") =>
+module.exports = (prefix = 'xxx') =>
   Buffer.from(`${prefix}-${Date.now()}-${Math.random()}`)
-    .toString("base64")
-    .replace(/[^a-zA-Z]/g, "");
+    .toString('base64')
+    .replace(/[^a-zA-Z]/g, '');

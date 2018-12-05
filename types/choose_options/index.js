@@ -1,5 +1,5 @@
-const randomSort = require("../../utils/randomSort");
-const getUniqueId = require("../../utils/getUniqueId");
+const randomSort = require('../../utils/randomSort');
+const getUniqueId = require('../../utils/getUniqueId');
 
 module.exports = ({ card, tags }) => {
   const uniqId = getUniqueId(card.question);
@@ -7,12 +7,12 @@ module.exports = ({ card, tags }) => {
     .map(
       el =>
         `<label  class="is_not_checked should_be_${
-          el.correct ? "" : "un"
+          el.correct ? '' : 'un'
         }checked"><input type="checkbox" /> <span class="question-text">${
           el.text
         }</span></label>`
     )
-    .join("<br />");
+    .join('<br />');
 
   const front = `
   <div id="${uniqId}_wrapper">
@@ -46,6 +46,6 @@ module.exports = ({ card, tags }) => {
   return {
     front,
     back: `<p>${card.comment}</p>`,
-    tags: tags || []
+    tags: tags || [],
   };
 };

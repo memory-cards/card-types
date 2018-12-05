@@ -1,5 +1,5 @@
-const randomSort = require("../../utils/randomSort");
-const getUniqueId = require("../../utils/getUniqueId");
+const randomSort = require('../../utils/randomSort');
+const getUniqueId = require('../../utils/getUniqueId');
 
 module.exports = ({ card, tags }) => {
   const uniqId = getUniqueId(card.question);
@@ -10,7 +10,7 @@ module.exports = ({ card, tags }) => {
           el
         )}" ondragover="dragOver(event)" ondragstart="dragStart(event)">${el}</li>`
     )
-    .join("")}</ol>`;
+    .join('')}</ol>`;
 
   const front = `
 <style>
@@ -91,6 +91,6 @@ checkBtn.addEventListener('click', function() {
   return {
     front,
     back: `<p>${card.comment}</p>`,
-    tags: tags || []
+    tags: tags || [],
   };
 };

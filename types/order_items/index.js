@@ -37,10 +37,12 @@ ol {
   text-align: left;
 }
 </style>
+
 <div id="${uniqId}_wrapper">
   <p>${card.question}</p>
   <div class="questions-wrapper">${questionsHtml}</div>
 </div>
+
 <button id="${uniqId}_checkBtn">Check</button>
 <div id="log"></div>
 <script>

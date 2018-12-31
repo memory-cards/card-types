@@ -16,4 +16,4 @@ module.exports = ({ card, tags }) => {
     back,
     tags: tags || [],
   }
-}
+};

@@ -2,7 +2,7 @@ module.exports = ({ card, tags }) => {
   const back = `
     <p text-align="left">
       ${card.comment}
-    </p>
+    </p>25
   `;
 
   return {

@@ -15,5 +15,5 @@ module.exports = ({ card, tags }) => {
     front: card.question,
     back,
     tags: tags || [],
-  }
+  };
 };

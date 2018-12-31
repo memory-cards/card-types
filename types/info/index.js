@@ -1,6 +1,6 @@
 module.exports = ({ card, tags }) => {
   const back = `
-    <p align="justify">
+    <p text-align="left">
       ${card.comment}
     </p>
   `;

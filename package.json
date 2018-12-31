@@ -22,11 +22,11 @@
     "url": "https://github.com/memory-cards/card-types/issues"
   },
   "lint-staged": {
-    "*.{md}": [
+    "*.md": [
       "prettier --insert-pragma --write",
       "git add"
     ],
-    "*.{js}": [
+    "*.js": [
       "prettier --write",
       "eslint --fix --quiet",
       "git add"

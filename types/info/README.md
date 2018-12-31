@@ -3,7 +3,6 @@
 It's the simpliest type of cards which is mostly used at Anki.
 This card provides some information: there can be a abbriviation or question to user which has an explanation or answer on the back of the card.
 
-
 ## Example:
 
 ```
@@ -11,7 +10,6 @@ This card provides some information: there can be a abbriviation or question to 
 ```
 
 Should give a card with text on front side and answer on the other side.
-
 
 <img alt="Example of information card" src="./images/information-card.png">
 

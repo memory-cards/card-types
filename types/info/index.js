@@ -1,8 +1,14 @@
 module.exports = ({ card, tags }) => {
   const back = `
-    <p text-align="left">
+    <p class="wrapper">
       ${card.comment}
-    </p>25
+    </p>
+    
+    <style>
+      .wrapper {
+        text-align: left
+      }  
+    </style>
   `;
 
   return {

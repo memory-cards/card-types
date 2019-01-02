@@ -9,7 +9,8 @@
     "lint:json5": "json5 -v ./**/*.json5",
     "lint:md": "prettier --list-different ./**/*.md",
     "lint:js": "prettier --list-different ./**/*.{json,json5}",
-    "test": "yarn run lint:md && yarn run lint:js && yarn run lint:eslint && yarn run lint:json5"
+    "test:card-types": "node scripts/testCardTypes.js",
+    "test": "yarn run lint:md && yarn run lint:js && yarn run lint:eslint && yarn run lint:json5 && yarn run test:card-types"
   },
   "repository": {
     "type": "git",

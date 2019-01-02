@@ -1,6 +1,11 @@
 /* eslint-disable global-require,import/no-dynamic-require */
-const { lstatSync, readdirSync } = require('fs');
+const { lstatSync, readdirSync, writeFileSync } = require('fs');
 const { join } = require('path');
+const { tmpdir } = require('os');
+const AnkiExport = require('anki-apkg-export').default;
+
+const OUTPUT_DIR = tmpdir();
+
 require('json5/lib/register');
 
 const isDirectory = source => lstatSync(source).isDirectory();
@@ -70,7 +75,32 @@ const testIndex = typeDir => {
   return ret;
 };
 
-currentTypes.forEach(typeDir => {
+const testAnkiCardCreation = async typeDir => {
+  let ret = true;
+  try {
+    const apkg = new AnkiExport(`${typeDir} example deck`);
+    const index = require(`../${typeDir}/index.js`);
+    const example = require(`../${typeDir}/example.json5`);
+    const { front, back, tags } = index(example);
+    apkg.addCard(front, back, tags);
+
+    await apkg
+      .save()
+      .then(zip =>
+        writeFileSync(
+          `${OUTPUT_DIR}/${typeDir.replace(/\W/g, '_')}.apkg`,
+          zip,
+          'binary'
+        )
+      );
+  } catch (e) {
+    console.log('testAnkiCardCreation', e);
+    ret = false;
+  }
+  return ret;
+};
+
+currentTypes.forEach(async typeDir => {
   console.log(`>> We're going to check "${typeDir}"`);
   const errors = [];
   if (!containsReadme(typeDir)) {
@@ -90,6 +120,10 @@ currentTypes.forEach(typeDir => {
   }
   if (!testIndex(typeDir)) {
     errors.push('Index should follow the interface');
+  }
+  const ankiCardCreationResult = await testAnkiCardCreation(typeDir);
+  if (!ankiCardCreationResult) {
+    errors.push('anki-cards should generate cards from example data');
   }
 
   if (errors.length) {

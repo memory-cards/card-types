@@ -18,24 +18,24 @@ const currentTypes = getDirectories('./types');
 
 const testErrors = {};
 
-const containsFile = fileName => typeDir => {
-  let ret = true;
+const fileExists = fileName => typeDir => {
+  let result = true;
   try {
     lstatSync(`./${typeDir}/${fileName}`);
   } catch (e) {
     console.log(e.message);
-    ret = false;
+    result = false;
   }
-  return ret;
+  return result;
 };
 
-const containsReadme = containsFile('README.md');
-const containsExample = containsFile('example.json5');
-const containsValidator = containsFile('validator.js');
-const containsIndex = containsFile('index.js');
+const containsReadme = fileExists('README.md');
+const containsExample = fileExists('example.json5');
+const containsValidator = fileExists('validator.js');
+const containsIndex = fileExists('index.js');
 
 const testValidator = typeDir => {
-  let ret = true;
+  let result = true;
   try {
     const failedObj = {};
     const successObj = require(`../${typeDir}/example.json5`);
@@ -48,35 +48,35 @@ const testValidator = typeDir => {
     }
   } catch (e) {
     console.log(`testValidator error:`, e);
-    ret = false;
+    result = false;
   }
-  return ret;
+  return result;
 };
 
 const testIndex = typeDir => {
-  let ret = true;
+  let result = true;
   try {
     const successObj = require(`../${typeDir}/example.json5`);
     const index = require(`../${typeDir}/index.js`);
-    const result = index(successObj);
-    if (typeof result.front !== 'string') {
+    const cardData = index(successObj);
+    if (typeof cardData.front !== 'string') {
       throw new Error('should have `front property`');
     }
-    if (typeof result.back !== 'string') {
+    if (typeof cardData.back !== 'string') {
       throw new Error('should have `back` property');
     }
-    if (!Array.isArray(result.tags)) {
+    if (!Array.isArray(cardData.tags)) {
       throw new Error('should have `tags` property');
     }
   } catch (e) {
-    console.log(`testValidator error:`, e);
-    ret = false;
+    console.log(`testIndex error:`, e);
+    result = false;
   }
-  return ret;
+  return result;
 };
 
 const testAnkiCardCreation = async typeDir => {
-  let ret = true;
+  let result = true;
   try {
     const apkg = new AnkiExport(`${typeDir} example deck`);
     const index = require(`../${typeDir}/index.js`);
@@ -95,9 +95,9 @@ const testAnkiCardCreation = async typeDir => {
       );
   } catch (e) {
     console.log('testAnkiCardCreation', e);
-    ret = false;
+    result = false;
   }
-  return ret;
+  return result;
 };
 
 currentTypes.forEach(async typeDir => {
@@ -110,7 +110,7 @@ currentTypes.forEach(async typeDir => {
     errors.push('Should contain example.json5 file');
   }
   if (!containsValidator(typeDir)) {
-    errors.push('Should contain example.json5 file');
+    errors.push('Should validator.js file');
   }
   if (!containsIndex(typeDir)) {
     errors.push('Should contain index.js file');

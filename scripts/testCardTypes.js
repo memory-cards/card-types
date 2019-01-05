@@ -29,10 +29,10 @@ const fileExists = fileName => typeDir => {
   return result;
 };
 
-const containsReadme = fileExists('README.md');
-const containsExample = fileExists('example.json5');
-const containsValidator = fileExists('validator.js');
-const containsIndex = fileExists('index.js');
+const readmeExists = fileExists('README.md');
+const exampleExists = fileExists('example.json5');
+const validatorExists = fileExists('validator.js');
+const indexExists = fileExists('index.js');
 
 const testValidator = typeDir => {
   let result = true;
@@ -100,38 +100,42 @@ const testAnkiCardCreation = async typeDir => {
   return result;
 };
 
-currentTypes.forEach(async typeDir => {
-  console.log(`>> We're going to check "${typeDir}"`);
-  const errors = [];
-  if (!containsReadme(typeDir)) {
-    errors.push('Should contain README.md file');
-  }
-  if (!containsExample(typeDir)) {
-    errors.push('Should contain example.json5 file');
-  }
-  if (!containsValidator(typeDir)) {
-    errors.push('Should validator.js file');
-  }
-  if (!containsIndex(typeDir)) {
-    errors.push('Should contain index.js file');
-  }
-  if (!testValidator(typeDir)) {
-    errors.push('Validator should work correctly');
-  }
-  if (!testIndex(typeDir)) {
-    errors.push('Index should follow the interface');
-  }
-  const ankiCardCreationResult = await testAnkiCardCreation(typeDir);
-  if (!ankiCardCreationResult) {
-    errors.push('anki-cards should generate cards from example data');
-  }
+(async () => {
+  await Promise.all(
+    currentTypes.map(async typeDir => {
+      console.log(`>> We're going to check "${typeDir}"`);
+      const errors = [];
+      if (!readmeExists(typeDir)) {
+        errors.push('Should contain README.md file');
+      }
+      if (!exampleExists(typeDir)) {
+        errors.push('Should contain example.json5 file');
+      }
+      if (!validatorExists(typeDir)) {
+        errors.push('Should validator.js file');
+      }
+      if (!indexExists(typeDir)) {
+        errors.push('Should contain index.js file');
+      }
+      if (!testValidator(typeDir)) {
+        errors.push('Validator should work correctly');
+      }
+      if (!testIndex(typeDir)) {
+        errors.push('Index should follow the interface');
+      }
+      const ankiCardCreationResult = await testAnkiCardCreation(typeDir);
+      if (!ankiCardCreationResult) {
+        errors.push('anki-cards should generate cards from example data');
+      }
 
-  if (errors.length) {
-    testErrors[typeDir] = errors;
-  }
-});
+      if (errors.length) {
+        testErrors[typeDir] = errors;
+      }
+    })
+  );
 
-if (Object.keys(testErrors).length > 0) {
-  console.log(`Next errors were found:`, JSON.stringify(testErrors, null, 2));
-  process.exit(1);
-}
+  if (Object.keys(testErrors).length > 0) {
+    console.log(`Next errors were found:`, JSON.stringify(testErrors, null, 2));
+    process.exit(1);
+  }
+})();

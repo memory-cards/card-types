@@ -13,10 +13,13 @@ module.exports = ({ card, tags }) => {
     var questionContainer = document.querySelector('.questions-wrapper');
     var cardAnswers = ${JSON.stringify(card.answers)};
     var answersHTML = cardAnswers
-      .sort(el => Math.random() - 0.5)
-      .map(el => \`<label class="is_not_checked should_be_\${ el.correct ? 'checked' : 'unchecked' }">
-        <input type="checkbox"/>
-        <span class="question-text">\${ el.text }</span></label>\`)
+      .sort(function(el) { return Math.random() - 0.5; })
+      .map(function(el) {
+        return '<label class="is_not_checked should_be_' 
+          + (el.correct ? 'checked' : 'unchecked') 
+          + '"><input type="checkbox"/><span class="question-text">' 
+          + el.text 
+          + '</span></label>';})
       .join('<br />');
 
     questionContainer.innerHTML = answersHTML;

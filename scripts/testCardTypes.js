@@ -3,6 +3,7 @@ const { lstatSync, readdirSync, writeFileSync } = require('fs');
 const { join } = require('path');
 const { tmpdir } = require('os');
 const AnkiExport = require('anki-apkg-export').default;
+const getUniqueId = require('../utils/getUniqueId');
 
 const OUTPUT_DIR = tmpdir();
 
@@ -58,7 +59,7 @@ const testIndex = typeDir => {
   try {
     const successObj = require(`../${typeDir}/example.json5`);
     const index = require(`../${typeDir}/index.js`);
-    const cardData = index(successObj);
+    const cardData = index(successObj, getUniqueId());
     if (typeof cardData.front !== 'string') {
       throw new Error('should have `front property`');
     }

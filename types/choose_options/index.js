@@ -1,6 +1,7 @@
 const getUniqueId = require('../../utils/getUniqueId');
 
-module.exports = ({ card, tags }) => {
+module.exports = (cardData, cardId) => {
+  const { card, tags } = cardData;
   const uniqId = getUniqueId(card.question);
 
   const front = `
@@ -10,9 +11,10 @@ module.exports = ({ card, tags }) => {
   </div>
   <button id="${uniqId}_checkBtn">Check</button>
   <script>
+    var cardId = '${cardId}';
     var questionContainer = document.querySelector('.questions-wrapper');
     var cardAnswers = ${JSON.stringify(card.answers)};
-    var answersHTML = cardAnswers
+    var cardOptions = cardAnswers
       .sort(function(el) { return Math.random() - 0.5; })
       .map(function(el) {
         return '<label class="is_not_checked should_be_' 
@@ -21,7 +23,12 @@ module.exports = ({ card, tags }) => {
           + el.text 
           + '</span></label>';})
       .join('<br />');
-
+      
+    var answersHTML = window[cardId] || cardOptions;
+    if (!window[cardId]) {
+      window[cardId] = cardOptions;  
+    }
+    
     questionContainer.innerHTML = answersHTML;
     var contentWrapper = document.querySelector('#${uniqId}_wrapper');
     var checkBtn = document.querySelector('#${uniqId}_checkBtn');

@@ -1,18 +1,15 @@
 const getUniqueId = require('../../utils/getUniqueId');
 
-module.exports = (cardData, cardId) => {
-  const { card, tags } = cardData;
-  const uniqId = getUniqueId(card.question);
+module.exports = ({ card, tags }) => {
+  const cardId = getUniqueId(card.question);
 
   const front = `
-  <div id="${uniqId}_wrapper">
+  <div id="${cardId}_wrapper">
     <p>${card.question}</p>
     <div class="questions-wrapper"></div>
   </div>
-  <button id="${uniqId}_checkBtn">Check</button>
+  <button id="${cardId}_checkBtn">Check</button>
   <script>
-    var cardId = '${cardId}';
-    
     if (!window.memoryCards) {
       window.memoryCards = {};
     }
@@ -29,11 +26,11 @@ module.exports = (cardData, cardId) => {
           + '</span></label>';})
       .join('<br />');
       
-    var answersHTML = window.memoryCards[cardId] || cardOptions;
-    
+    var answersHTML = window.memoryCards['${cardId}'] || cardOptions;
     questionContainer.innerHTML = answersHTML;
-    var contentWrapper = document.querySelector('#${uniqId}_wrapper');
-    var checkBtn = document.querySelector('#${uniqId}_checkBtn');
+    
+    var contentWrapper = document.querySelector('#${cardId}_wrapper');
+    var checkBtn = document.querySelector('#${cardId}_checkBtn');
     checkBtn.addEventListener('click', function() { contentWrapper.classList.add('checked'); });
     contentWrapper.addEventListener('click', function(ev) {
       if (ev.target.tagName !== 'INPUT') { return; }
@@ -41,11 +38,11 @@ module.exports = (cardData, cardId) => {
         ev.target.parentElement.classList[isChecked ? 'add' : 'remove']('is_checked');
         ev.target.parentElement.classList[isChecked ? 'remove' : 'add']('is_not_checked');
         ev.target.setAttribute("checked", isChecked);
-        window.memoryCards[cardId] = questionContainer.innerHTML;
+        window.memoryCards['${cardId}'] = questionContainer.innerHTML;
     });
   </script>
   <style>
-    #${uniqId}_wrapper.checked {
+    #${cardId}_wrapper.checked {
       border: 1px solid lightgray;
       pointer-events: none;
     }

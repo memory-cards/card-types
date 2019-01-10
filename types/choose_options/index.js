@@ -16,7 +16,7 @@ module.exports = ({ card, tags }) => {
     
     var questionContainer = document.querySelector('.questions-wrapper');
     var cardAnswers = ${JSON.stringify(card.answers)};
-    var cardOptions = cardAnswers
+    questionContainer.innerHTML = window.memoryCards['${cardId}'] || cardAnswers
       .sort(function(el) { return Math.random() - 0.5; })
       .map(function(el) {
         return '<label class="is_not_checked should_be_' 
@@ -26,9 +26,6 @@ module.exports = ({ card, tags }) => {
           + '</span></label>';})
       .join('<br />');
       
-    var answersHTML = window.memoryCards['${cardId}'] || cardOptions;
-    questionContainer.innerHTML = answersHTML;
-    
     var contentWrapper = document.querySelector('#${cardId}_wrapper');
     var checkBtn = document.querySelector('#${cardId}_checkBtn');
     checkBtn.addEventListener('click', function() { contentWrapper.classList.add('checked'); });

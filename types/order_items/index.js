@@ -1,4 +1,4 @@
-const getUniqueId = require('../../utils/getUniqueId');
+const getUniqueId = require("../../utils/getUniqueId");
 
 module.exports = ({ card, tags }) => {
   const cardId = getUniqueId(card.question);
@@ -117,6 +117,6 @@ module.exports = ({ card, tags }) => {
   return {
     front,
     back,
-    tags: tags || [],
+    tags: tags || []
   };
 };

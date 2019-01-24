@@ -8,6 +8,10 @@ const OUTPUT_DIR = tmpdir();
 
 require('json5/lib/register');
 
+const singleTypeToCheck = process.argv[2];
+
+const filterTypesToCheck = typeDir =>
+  !singleTypeToCheck || typeDir.includes(singleTypeToCheck);
 const isDirectory = source => lstatSync(source).isDirectory();
 const getDirectories = source =>
   readdirSync(source)
@@ -102,7 +106,7 @@ const testAnkiCardCreation = async typeDir => {
 
 (async () => {
   await Promise.all(
-    currentTypes.map(async typeDir => {
+    currentTypes.filter(filterTypesToCheck).map(async typeDir => {
       console.log(`>> We're going to check "${typeDir}"`);
       const errors = [];
       if (!readmeExists(typeDir)) {

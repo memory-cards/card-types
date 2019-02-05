@@ -1,6 +1,6 @@
 /* eslint-disable global-require,import/no-dynamic-require */
 const { lstatSync, readdirSync, writeFileSync } = require('fs');
-const { join } = require('path');
+const { join, sep } = require('path');
 const { tmpdir } = require('os');
 const AnkiExport = require('anki-apkg-export').default;
 
@@ -105,7 +105,7 @@ const testAnkiCardCreation = async typeDir => {
 };
 
 const testPackageInterface = async typeDir => {
-  const type = typeDir.replace('types/', '');
+  const type = typeDir.replace(`types${sep}`, '');
   const interfaceFile = require('../index.js');
   return type in interfaceFile;
 };

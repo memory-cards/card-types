@@ -1,6 +1,6 @@
 /* eslint-disable global-require,import/no-dynamic-require */
 const { lstatSync, readdirSync, writeFileSync } = require('fs');
-const { join } = require('path');
+const { join, sep } = require('path');
 const { tmpdir } = require('os');
 const AnkiExport = require('anki-apkg-export').default;
 
@@ -104,6 +104,12 @@ const testAnkiCardCreation = async typeDir => {
   return result;
 };
 
+const testPackageInterface = async typeDir => {
+  const type = typeDir.replace(`types${sep}`, '');
+  const interfaceFile = require('../index.js');
+  return type in interfaceFile;
+};
+
 (async () => {
   await Promise.all(
     currentTypes.filter(filterTypesToCheck).map(async typeDir => {
@@ -130,6 +136,11 @@ const testAnkiCardCreation = async typeDir => {
       const ankiCardCreationResult = await testAnkiCardCreation(typeDir);
       if (!ankiCardCreationResult) {
         errors.push('anki-cards should generate cards from example data');
+      }
+
+      const packageInterfaceResult = await testPackageInterface(typeDir);
+      if (!packageInterfaceResult) {
+        errors.push('type should be presented in module interface file');
       }
 
       if (errors.length) {

@@ -1,55 +1,71 @@
 const getUniqueId = require('../../utils/getUniqueId');
 
-function addCodeTags(inputText) {
-  const regexp = /```(.|[^`]+)```/gs;
-  let outputText = inputText.replace(/{/g, '{<br/>');
-  outputText = outputText.replace(/;/g, ';<br/>');
-  let result = regexp.exec(outputText);
-  while (result !== null) {
-    const stringWithCodeTags = `<br/><code>${result[1]}</code><br/>`;
-    outputText = outputText.replace(result[0], stringWithCodeTags);
-    result = regexp.exec(outputText);
-  }
-  return outputText;
-}
-
 module.exports = ({ card, tags }) => {
   const cardId = getUniqueId(card.question);
-  const refactoredCard = {
-    ...card,
-    question: addCodeTags(card.question),
-    comment: addCodeTags(card.comment),
-  };
+  const cardGuessesId = `${cardId}guesses`;
 
   const front = `
     <div id="${cardId}_wrapper">
-      <p id="question"></p>
+      <div id="question"></div>
       <div class="questions-wrapper"></div>
     </div>
     <button id="${cardId}_checkBtn">Check</button>
 
     <script>
-      var card = ${JSON.stringify(refactoredCard)};
+      var card = ${JSON.stringify(card)};
+      var emptyGuessMark = '???';
+      var emptyGuessMarkRegexp = /[?]{3}/g;
 
       if (!window.memoryCards) {
         window.memoryCards = {};
       }
 
       var question = document.querySelector('#question');
-      question.innerHTML = card.question;
+      question.innerHTML = window.memoryCards['${cardGuessesId}'] || card.question.replace(emptyGuessMarkRegexp, getEmptyGuessItem());
 
       var questionContainer = document.querySelector('.questions-wrapper');
-      var cardAnswers = card.answers;
+      var cardAnswers = getCorrectCardAnswers(card.answers);
       questionContainer.innerHTML = window.memoryCards['${cardId}'] || cardAnswers
-        .sort(function (el) { return Math.random() - 0.5; })
+        .sort(function () { return Math.random() - 0.5; })
         .map(function (el) {
-          return '<button class="answer_options ' + el.text + '"'
-            + 'data-answer="' + (el.sequenceNumber !== undefined ? el.sequenceNumber + 1 : '') + '" '
+          return '<button class="answer_options"'
+            + 'data-answer="' + (el.sequenceNumber !== undefined ? el.sequenceNumber : '') + '" '
             + '>'
             + el.text
             + '</button>';
         })
         .join('<br />');
+
+      function getCorrectAnswersAmount(question) {
+        return ((question || '').match(emptyGuessMarkRegexp) || []).length;
+      }
+
+      function getEmptyGuessItem() {
+        return '<span class="guess">' + emptyGuessMark + '</span>';
+      }
+
+      function getCorrectCardAnswers(answers) {
+        var correctAnswersAmount = getCorrectAnswersAmount(card.question);
+        for (var i = 0; i < correctAnswersAmount; i++) {
+          answers[i].sequenceNumber = i + 1;
+        }
+        return answers;
+      }
+
+      var guesses = question.getElementsByClassName('guess');
+      var buttons = questionContainer.querySelectorAll('button');
+
+      function showCurrentActiveGuess() {
+        [].forEach.call(guesses, function(el) {
+          el.classList.remove('active-guess');
+        });
+        for (var i = 0; i < guesses.length; i++) {
+          if (guesses[i].innerHTML === emptyGuessMark) {
+            guesses[i].classList.add('active-guess');
+            break;
+          }
+        }
+      }
 
       function checkAnswer() {
         var correctAnswers = cardAnswers
@@ -59,13 +75,11 @@ module.exports = ({ card, tags }) => {
           .sort(function (a, b) {
             return a.sequenceNumber - b.sequenceNumber;
           });
-        var guesses = question.getElementsByClassName('guess');
         [].forEach.call(guesses, function (el, index) {
           el.classList.add(el.innerHTML === correctAnswers[index].text ? 'correct-guess' : 'incorrect-guess');
         });
 
-        var elements = [].slice.call(questionContainer.querySelectorAll('button'));
-        elements.forEach(function (el, index) {
+        [].forEach.call(buttons, function (el) {
           el.innerHTML += '<span class="answer-mark">' + el.getAttribute('data-answer') + '</span>';
         });
         contentWrapper.classList.add('checked');
@@ -76,35 +90,67 @@ module.exports = ({ card, tags }) => {
 
       var contentWrapper = document.querySelector('#${cardId}_wrapper');
       contentWrapper.addEventListener('click', function (ev) {
-        var delimiter = '???';
-        if (ev.target.tagName === 'BUTTON' && question.innerHTML.indexOf(delimiter) !== -1) {
-          question.innerHTML = question.innerHTML.replace(delimiter, '<span class="guess">' + ev.target.innerHTML + '</span>');
+        if (ev.target.tagName === 'BUTTON' && question.innerHTML.indexOf(emptyGuessMark) !== -1) {
+          question.innerHTML = question.innerHTML.replace(emptyGuessMark, ev.target.innerHTML);
           ev.target.classList.add('selected-option');
           ev.target.disabled = true;
+          showCurrentActiveGuess();
         }
-
+        
         if (ev.target.tagName === 'SPAN' && ev.target.classList.contains('guess')) {
           if (question.innerHTML.indexOf(ev.target.outerHTML) !== -1) {
-            question.innerHTML = question.innerHTML.replace(ev.target.outerHTML, delimiter);
+            question.innerHTML = question.innerHTML.replace(ev.target.outerHTML, getEmptyGuessItem());
+            
+            if (ev.target.innerHTML !== emptyGuessMark) {
+              for (var i = 0; i < buttons.length; i++) {
+                if (buttons[i].innerHTML === ev.target.innerHTML) {
+                  buttons[i].classList.remove('selected-option');
+                  buttons[i].disabled = false;
+                  break;
+                }
+              }
+            }
 
-            var btn = questionContainer.querySelector('.' + ev.target.innerHTML);
-            btn.disabled = false;
-            btn.classList.remove('selected-option');
+            showCurrentActiveGuess();
           }
         }
         window.memoryCards['${cardId}'] = questionContainer.innerHTML;
+        window.memoryCards['${cardGuessesId}'] = question.innerHTML;
       });
+      showCurrentActiveGuess();
       window.memoryCards['${cardId}'] = questionContainer.innerHTML;
     </script>
     
     <style>
+      html {
+        font-size: 150%;
+      }
+      
+      @media only screen and (max-device-width: 600px) {
+        html {
+          font-size: 70%;
+        }
+      }
+        
       #${cardId}_wrapper.checked {
         border: 1px solid lightgray;
         pointer-events: none;
       }
 
+      #question {
+        font-size: 1rem;
+      }
+
       .questions-wrapper {
+        margin: 0 auto;
+        width: 200px;
         text-align: left;
+        font-size: 1rem;
+      }
+
+      .comments-wrapper {
+        text-align: left;
+        font-size: 1rem;
       }
 
       .answer_options {
@@ -115,8 +161,13 @@ module.exports = ({ card, tags }) => {
       }
 
       .guess {
-        background-color: lightblue;
+        background-color: rgb(215, 235, 228);
         border-radius: 2px;
+        padding: 2px;
+      }
+
+      .active-guess {
+        background-color: rgb(175, 218, 233);
       }
 
       .correct-guess {
@@ -139,24 +190,37 @@ module.exports = ({ card, tags }) => {
         color: green;
       }
       
-      p {
-        text-align: left;
-      }
-      
       code {
-        background-color: rgba(27,31,35,.05);
+        padding: 2px;
+        background-color: #f8f8f8;
         border-radius: 3px;
-        font-size: 85%;
+        font-size: 0.85rem;
         margin: 0;
+        border: 1px solid #ccc;
+      }
+
+      div pre {
+        overflow: overlay;
+        text-align: left;
+        white-space: pre-wrap;
+        tab-size: 4;
+        padding: 10px;
+        display: block;
+        background-color: #f8f8f8;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        font-size: 0.85rem;
+        margin: 10px;
       }
     </style>
   `;
 
   const back = `
-    <p>${refactoredCard.comment}</p>
+    <div class="comments-wrapper">${card.comment}</div>
     <script>
       checkAnswer();
       delete window.memoryCards['${cardId}'];
+      delete window.memoryCards['${cardGuessesId}'];
     </script>
   `;
 

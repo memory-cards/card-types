@@ -3,20 +3,18 @@
   lang: "en",
   tags: ["development", "javascript"],
   card: {
-    question: "Turn the arguments of a method into a array:\
-      ```function myArray() {\
-          var a = ???;\
-          a = Array.prototype.???.call(a);\
-          return a;\
-        }```",
+    question: "Turn the arguments of a method into a array:<br/>\
+<pre>function myArray() {\n\
+  var a = ???;\n\
+  a = Array.prototype.???.call(a);\n\
+  return a;\n\
+}</pre>",
     answers: [
       {
-        text: "arguments",
-        sequenceNumber: 0
+        text: "arguments"
       },
       {
-        text: "slice",
-        sequenceNumber: 1
+        text: "slice"
       },
       {
         text: "splice"
@@ -34,18 +32,17 @@
         text: "toArray"
       }
     ],
-    comment: "the arguments of a function can be accessed with the arguments keyword, but arguments only returns a pseudo-array.\
+    comment: "The arguments of a function can be accessed with the arguments keyword, but arguments only returns a pseudo-array.\
       Before applying Array methods, arguments needs to be converted to an actual Array, as follows:\
-      ```function sortedArgs() {\
-      // pseudo-array of arguments\
-      var a = arguments\
-      // turn a into a proper Array:\
-      a = Array.prototype.slice.call(a)\
-      // we can now use Array methods:\
-      return a.sort();\
-      }```\
+<pre>function sortedArgs() {\n\
+  // pseudo-array of arguments\n\
+  var a = arguments\n\
+  // turn a into a proper Array:\n\
+  a = Array.prototype.slice.call(a)\n\
+  // we can now use Array methods:\n\
+  return a.sort();\n\
+}</pre>\
       Example of use:\
-      ```sortedArgs(3,1,2)\
-      // [1,2,3]```"
+      <code>sortedArgs(3,1,2) // [1,2,3]</code>"
   }
 }

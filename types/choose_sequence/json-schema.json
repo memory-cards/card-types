@@ -4,7 +4,7 @@
   "properties": {
     "type": {
       "type": "string",
-      "const": "order_items"
+      "const": "choose_sequence"
     },
     "lang": {
       "type": "string",
@@ -35,9 +35,6 @@
               "text": {
                 "type": "string",
                 "minLength": 1
-              },
-              "sequenceNumber": {
-                "type": "number"
               }
             }
           }

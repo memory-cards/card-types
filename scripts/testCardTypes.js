@@ -1,6 +1,6 @@
 /* eslint-disable global-require,import/no-dynamic-require */
 const { lstatSync, readdirSync, writeFileSync } = require('fs');
-const { join } = require('path');
+const { join, sep } = require('path');
 const { tmpdir } = require('os');
 const AnkiExport = require('anki-apkg-export').default;
 
@@ -8,6 +8,10 @@ const OUTPUT_DIR = tmpdir();
 
 require('json5/lib/register');
 
+const singleTypeToCheck = process.argv[2];
+
+const filterTypesToCheck = typeDir =>
+  !singleTypeToCheck || typeDir.includes(singleTypeToCheck);
 const isDirectory = source => lstatSync(source).isDirectory();
 const getDirectories = source =>
   readdirSync(source)
@@ -100,9 +104,15 @@ const testAnkiCardCreation = async typeDir => {
   return result;
 };
 
+const testPackageInterface = async typeDir => {
+  const type = typeDir.replace(`types${sep}`, '');
+  const interfaceFile = require('../index.js');
+  return type in interfaceFile;
+};
+
 (async () => {
   await Promise.all(
-    currentTypes.map(async typeDir => {
+    currentTypes.filter(filterTypesToCheck).map(async typeDir => {
       console.log(`>> We're going to check "${typeDir}"`);
       const errors = [];
       if (!readmeExists(typeDir)) {
@@ -126,6 +136,11 @@ const testAnkiCardCreation = async typeDir => {
       const ankiCardCreationResult = await testAnkiCardCreation(typeDir);
       if (!ankiCardCreationResult) {
         errors.push('anki-cards should generate cards from example data');
+      }
+
+      const packageInterfaceResult = await testPackageInterface(typeDir);
+      if (!packageInterfaceResult) {
+        errors.push('type should be presented in module interface file');
       }
 
       if (errors.length) {

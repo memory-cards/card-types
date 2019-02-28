@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "required": ["type", "card", "lang", "tags"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "choose_sequence"
+    },
+    "lang": {
+      "type": "string",
+      "enum": ["en", "ru"]
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "card": {
+      "type": "object",
+      "required": ["question", "answers"],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "answers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "comment": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

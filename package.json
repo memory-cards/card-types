@@ -4,7 +4,6 @@
   "description": "Structure of a repo:",
   "main": "index.js",
   "scripts": {
-    "precommit": "lint-staged",
     "lint:eslint": "eslint --quiet .",
     "lint:json5": "json5 -v ./**/*.json5",
     "lint:md": "prettier --list-different ./**/*.md",
@@ -53,5 +52,10 @@
     "anki-apkg-export": "^4.0.2",
     "json5": "^2.1.0",
     "jsonschema": "^1.2.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

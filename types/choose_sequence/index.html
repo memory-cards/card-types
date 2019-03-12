@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div id="cardIdeshecka_wrapper">
+      <div id="question"></div>
+      <div class="questions-wrapper"></div>
+    </div>
+    <button id="cardIdeshecka_checkBtn">Check</button>
+    <script>
+      var cardWrapper = {
+        type: 'choose_sequence',
+        lang: 'en',
+        tags: ['development', 'javascript'],
+        card: {
+          question:
+            'Turn the arguments of a method into a array:<br/>\
+      <pre>function myArray() {\n\
+          var a = ???;\n\
+          a = Array.prototypecall(a);\n\
+          return a;\n\
+      }</pre>',
+          answers: [
+            {
+              text: 'arguments'
+            },
+            {
+              text: 'slice'
+            },
+            {
+              text: 'splice'
+            },
+            {
+              text: 'argv'
+            },
+            {
+              text: 'args'
+            },
+            {
+              text: 'sort'
+            },
+            {
+              text: 'toArray'
+            }
+          ],
+          comment:
+            'The arguments of a function can be accessed with the arguments keyword, but arguments only returns a pseudo-array.\n Before applying Array methods, arguments needs to be converted to an actual Array, as follows: \n```function sortedArgs() {\n // pseudo-array of arguments \n var a = arguments \n // turn a into a proper Array: \n a = Array.prototype.slice.call(a) \n // we can now use Array methods: \n return a.sort(); \n }``` \nExample of use: \n ```sortedArgs(3,1,2) \n // [1,2,3]```'
+        }
+      };
+      var card = cardWrapper.card;
+      var emptyGuessMark = '???';
+      var emptyGuessMarkRegexp = /[?]{3}/g;
+      if (!window.memoryCards) {
+        window.memoryCards = {};
+      }
+      var question = document.querySelector('#question');
+      question.innerHTML = card.question.replace(
+        emptyGuessMarkRegexp,
+        getEmptyGuessMark()
+      );
+      var questionContainer = document.querySelector('.questions-wrapper');
+      var cardAnswers = getCorrectCardAnswers(card.answers);
+      var correctAnswersAmount = getCorrectAnswersAmount(card.question);
+      function getCorrectAnswersAmount(question) {
+        return ((question || '').match(emptyGuessMarkRegexp) || []).length;
+      }
+      function getEmptyGuessMark() {
+        return '<span class="guess">' + emptyGuessMark + '</span>';
+      }
+      function getCorrectCardAnswers(answers) {
+        for (let i = 0; i < correctAnswersAmount; i++) {
+          answers[i].sequenceNumber = i + 1;
+        }
+        return answers;
+      }
+      questionContainer.innerHTML =
+        window.memoryCards['cardIdeshecka'] ||
+        cardAnswers
+          .sort(function(el) {
+            return Math.random() - 0.5;
+          })
+          .map(function(el) {
+            return (
+              '<button class="answer_options"' +
+              'data-answer="' +
+              (el.sequenceNumber !== undefined ? el.sequenceNumber : '') +
+              '" ' +
+              '>' +
+              el.text +
+              '</button>'
+            );
+          })
+          .join('<br />');
+      var guesses = question.getElementsByClassName('guess');
+      var buttons = questionContainer.querySelectorAll('button');
+      function checkAnswer() {
+        var correctAnswers = cardAnswers
+          .filter(function(el) {
+            return el.sequenceNumber !== undefined;
+          })
+          .sort(function(a, b) {
+            return a.sequenceNumber - b.sequenceNumber;
+          });
+        [].forEach.call(guesses, function(el, index) {
+          el.classList.add(
+            el.innerHTML === correctAnswers[index].text
+              ? 'correct-guess'
+              : 'incorrect-guess'
+          );
+        });
+        [].forEach.call(buttons, function(el, index) {
+          el.innerHTML +=
+            '<span class="answer-mark">' +
+            el.getAttribute('data-answer') +
+            '</span>';
+        });
+        contentWrapper.classList.add('checked');
+      }
+      function showCurrentActiveGuess() {
+        [].forEach.call(guesses, function(el) {
+          el.classList.remove('active-guess');
+        });
+        var element = [].find.call(guesses, function(el) {
+          return el.innerHTML === emptyGuessMark;
+        });
+        if (element) {
+          element.classList.add('active-guess');
+        }
+      }
+      showCurrentActiveGuess();
+      var checkBtn = document.querySelector('#cardIdeshecka_checkBtn');
+      checkBtn.addEventListener('click', checkAnswer);
+      var contentWrapper = document.querySelector('#cardIdeshecka_wrapper');
+      contentWrapper.addEventListener('click', function(ev) {
+        if (ev.target.tagName === 'BUTTON') {
+          if (question.innerHTML.indexOf(emptyGuessMark) !== -1) {
+            var activeGuess = question.querySelector('.active-guess');
+            activeGuess.textContent = ev.target.textContent;
+            ev.target.classList.add('selected-option');
+            ev.target.disabled = true;
+          } else if (correctAnswersAmount === 1) {
+            var previousGuess = question.querySelector('.guess');
+            previousGuess.textContent = ev.target.textContent;
+
+            var previousButton = document.querySelector('.selected-option');
+            if (previousButton) {
+              previousButton.classList.remove('selected-option');
+              previousButton.disabled = false;
+            }
+            ev.target.classList.add('selected-option');
+            ev.target.disabled = true;
+          }
+          showCurrentActiveGuess();
+        }
+        if (
+          ev.target.tagName === 'SPAN' &&
+          ev.target.classList.contains('guess')
+        ) {
+          if (question.innerHTML.indexOf(ev.target.outerHTML) !== -1) {
+            question.innerHTML = question.innerHTML.replace(
+              ev.target.outerHTML,
+              getEmptyGuessMark()
+            );
+            if (ev.target.innerHTML !== emptyGuessMark) {
+              var btn = [].find.call(buttons, function(el) {
+                return ev.target.innerHTML === el.innerHTML;
+              });
+              btn.classList.remove('selected-option');
+              btn.disabled = false;
+            }
+            showCurrentActiveGuess();
+          }
+        }
+      });
+    </script>
+    <style>
+      #cardIdeshecka_wrapper.checked {
+        border: 1px solid lightgray;
+        /* pointer-events: none; */
+      }
+      .questions-wrapper {
+        text-align: left;
+        margin: 0 auto;
+        width: 200px;
+      }
+      .answer_options {
+        position: relative;
+        width: 200px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+      }
+      .guess {
+        background-color: rgb(215, 241, 250);
+        border-radius: 2px;
+        padding: 2px;
+      }
+      .active-guess {
+        background-color: rgb(175, 218, 233);
+      }
+      .correct-guess {
+        background-color: rgb(132, 233, 162);
+      }
+      .incorrect-guess {
+        background-color: rgb(226, 107, 107);
+      }
+      .selected-option {
+        background-color: rgba(202, 202, 202, 0.2);
+        border-color: rgba(202, 202, 202, 0.2);
+      }
+      .answer-mark {
+        opacity: 1;
+        left: 5px;
+        position: absolute;
+        color: green;
+      }
+      code {
+        padding: 2px;
+        background-color: rgba(27, 31, 35, 0.05);
+        border-radius: 3px;
+        font-size: 85%;
+        margin: 0;
+        border: 1px solid #e1e1e8;
+      }
+      pre {
+        text-align: left;
+        white-space: pre-wrap;
+        /* display: inline-block; */
+        tab-size: 4;
+        padding: 10px;
+        display: block;
+        background-color: #f8f8f8;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+        font-size: 85%;
+        margin: 10px;
+      }
+    </style>
+  </body>
+</html>

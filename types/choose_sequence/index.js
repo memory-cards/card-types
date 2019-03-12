@@ -25,6 +25,8 @@ module.exports = ({ card, tags }) => {
 
       var questionContainer = document.querySelector('.questions-wrapper');
       var cardAnswers = getCorrectCardAnswers(card.answers);
+      var correctAnswersAmount = getCorrectAnswersAmount(card.question);
+
       questionContainer.innerHTML = window.memoryCards['${cardId}'] || cardAnswers
         .sort(function () { return Math.random() - 0.5; })
         .map(function (el) {
@@ -45,7 +47,6 @@ module.exports = ({ card, tags }) => {
       }
 
       function getCorrectCardAnswers(answers) {
-        var correctAnswersAmount = getCorrectAnswersAmount(card.question);
         for (var i = 0; i < correctAnswersAmount; i++) {
           answers[i].sequenceNumber = i + 1;
         }
@@ -90,10 +91,24 @@ module.exports = ({ card, tags }) => {
 
       var contentWrapper = document.querySelector('#${cardId}_wrapper');
       contentWrapper.addEventListener('click', function (ev) {
-        if (ev.target.tagName === 'BUTTON' && question.innerHTML.indexOf(emptyGuessMark) !== -1) {
-          question.innerHTML = question.innerHTML.replace(emptyGuessMark, ev.target.innerHTML);
-          ev.target.classList.add('selected-option');
-          ev.target.disabled = true;
+        if (ev.target.tagName === 'BUTTON') {
+          if (question.innerHTML.indexOf(emptyGuessMark) !== -1) {
+            var activeGuess = question.querySelector('.active-guess');
+            activeGuess.textContent = ev.target.textContent;
+            ev.target.classList.add('selected-option');
+            ev.target.disabled = true;
+          } else if (correctAnswersAmount === 1) {
+            var previousGuess = question.querySelector(".guess");
+            previousGuess.textContent = ev.target.textContent;
+
+            var previousButton = document.querySelector(".selected-option");
+            if (previousButton) {
+              previousButton.classList.remove("selected-option");
+              previousButton.disabled = false;
+            }
+            ev.target.classList.add("selected-option");
+            ev.target.disabled = true;
+          }
           showCurrentActiveGuess();
         }
         

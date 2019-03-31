@@ -173,6 +173,7 @@ module.exports = ({ card, tags }) => {
         width: 200px;
         margin-bottom: 5px;
         border-radius: 5px;
+        min-height: 2rem;
       }
 
       .guess {
@@ -212,6 +213,10 @@ module.exports = ({ card, tags }) => {
         font-size: 0.85rem;
         margin: 0;
         border: 1px solid #ccc;
+      }
+
+      pre code {
+        border-width: 0;
       }
 
       div pre {

@@ -5,7 +5,6 @@ module.exports = ({ card, tags }) => {
   const cardGuessesId = `${cardId}guesses`;
 
   const front = `
-  <div class="log"></div>
     <div id="${cardId}_wrapper">
       <div id="question"></div>
       <div class="questions-wrapper"></div>

@@ -12,7 +12,8 @@ function setItem(key, value) {
 
 // eslint-disable-next-line no-unused-vars
 function getItem(key) {
-  let value;
+  // eslint-disable-next-line no-var
+  var value;
   try {
     const jsonValue = window.sessionStorage.getItem(key);
     value = JSON.parse(jsonValue);

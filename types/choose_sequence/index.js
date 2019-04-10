@@ -1,3 +1,6 @@
+const storageHelpers = require('fs')
+  .readFileSync(`${__dirname}/../../utils/cardUtils/storageHelpers.js`)
+  .toString();
 const getUniqueId = require('../../utils/getUniqueId');
 
 module.exports = ({ card, tags }) => {
@@ -18,30 +21,7 @@ module.exports = ({ card, tags }) => {
 
       window.memoryCards = window.memoryCards || {};
 
-      function setItem(key, value) {
-        try {
-          window.sessionStorage.setItem(key, JSON.stringify(value))
-        } catch (e) {}
-        window.memoryCards[key] = value;
-      }
-
-      function getItem(key) {
-        var value;
-        try {
-          var jsonValue = window.sessionStorage.getItem(key);
-          value = JSON.parse(jsonValue);
-        } catch (e) {
-          value = window.memoryCards[key];
-        }
-        return value;
-      }
-
-      function removeItem(key) {
-        try {
-          window.sessionStorage.removeItem(key);
-        } catch (e) {}
-        delete window.memoryCards[key]
-      }
+      ${storageHelpers}
 
       var question = document.querySelector('#question');
       question.innerHTML = getItem('${cardGuessesId}') || card.question.replace(emptyGuessMarkRegexp, getEmptyGuessItem());

@@ -5,6 +5,7 @@ module.exports = ({ card, tags }) => {
   const cardGuessesId = `${cardId}guesses`;
 
   const front = `
+  <div class="log"></div>
     <div id="${cardId}_wrapper">
       <div id="question"></div>
       <div class="questions-wrapper"></div>
@@ -16,18 +17,41 @@ module.exports = ({ card, tags }) => {
       var emptyGuessMark = '???';
       var emptyGuessMarkRegexp = /[?]{3}/g;
 
-      if (!window.memoryCards) {
-        window.memoryCards = {};
+      window.memoryCards = window.memoryCards || {};
+
+      function setItem(key, value) {
+        try {
+          window.sessionStorage.setItem(key, JSON.stringify(value))
+        } catch (e) {}
+        window.memoryCards[key] = value;
+      }
+
+      function getItem(key) {
+        var value;
+        try {
+          var jsonValue = window.sessionStorage.getItem(key);
+          value = JSON.parse(jsonValue);
+        } catch (e) {
+          value = window.memoryCards[key];
+        }
+        return value;
+      }
+
+      function removeItem(key) {
+        try {
+          window.sessionStorage.removeItem(key);
+        } catch (e) {}
+        delete window.memoryCards[key]
       }
 
       var question = document.querySelector('#question');
-      question.innerHTML = window.memoryCards['${cardGuessesId}'] || card.question.replace(emptyGuessMarkRegexp, getEmptyGuessItem());
+      question.innerHTML = getItem('${cardGuessesId}') || card.question.replace(emptyGuessMarkRegexp, getEmptyGuessItem());
 
       var questionContainer = document.querySelector('.questions-wrapper');
-      var cardAnswers = getCorrectCardAnswers(card.answers);
       var correctAnswersAmount = getCorrectAnswersAmount(card.question);
+      var cardAnswers = getCorrectCardAnswers(card.answers);
 
-      questionContainer.innerHTML = window.memoryCards['${cardId}'] || cardAnswers
+      questionContainer.innerHTML = getItem('${cardId}') || cardAnswers
         .sort(function () { return Math.random() - 0.5; })
         .map(function (el) {
           return '<button class="answer_options"'
@@ -129,11 +153,11 @@ module.exports = ({ card, tags }) => {
             showCurrentActiveGuess();
           }
         }
-        window.memoryCards['${cardId}'] = questionContainer.innerHTML;
-        window.memoryCards['${cardGuessesId}'] = question.innerHTML;
+        setItem('${cardId}', questionContainer.innerHTML)
+        setItem('${cardGuessesId}', question.innerHTML)
       });
       showCurrentActiveGuess();
-      window.memoryCards['${cardId}'] = questionContainer.innerHTML;
+      setItem('${cardId}', questionContainer.innerHTML)
     </script>
     
     <style>
@@ -173,7 +197,7 @@ module.exports = ({ card, tags }) => {
         width: 200px;
         margin-bottom: 5px;
         border-radius: 5px;
-        min-height: 2rem;
+        min-height: 1rem;
       }
 
       .guess {
@@ -207,7 +231,7 @@ module.exports = ({ card, tags }) => {
       }
       
       code {
-        padding: 2px;
+        padding: 1px;
         background-color: #f8f8f8;
         border-radius: 3px;
         font-size: 0.85rem;
@@ -239,8 +263,8 @@ module.exports = ({ card, tags }) => {
     <div class="comments-wrapper">${card.comment}</div>
     <script>
       checkAnswer();
-      delete window.memoryCards['${cardId}'];
-      delete window.memoryCards['${cardGuessesId}'];
+      removeItem('${cardId}');
+      removeItem('${cardGuessesId}');
     </script>
   `;
 

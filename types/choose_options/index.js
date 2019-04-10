@@ -1,3 +1,6 @@
+const storageHelpers = require('fs')
+  .readFileSync(`${__dirname}/../../utils/cardUtils/storageHelpers.js`)
+  .toString();
 const getUniqueId = require('../../utils/getUniqueId');
 
 module.exports = ({ card, tags }) => {
@@ -10,13 +13,12 @@ module.exports = ({ card, tags }) => {
   </div>
   <button id="${cardId}_checkBtn">Check</button>
   <script>
-    if (!window.memoryCards) {
-      window.memoryCards = {};
-    }
+    window.memoryCards = window.memoryCards || {};
+    ${storageHelpers}
     
     var questionContainer = document.querySelector('.questions-wrapper');
     var cardAnswers = ${JSON.stringify(card.answers)};
-    questionContainer.innerHTML = window.memoryCards['${cardId}'] || cardAnswers
+    questionContainer.innerHTML = getItem('${cardId}') || cardAnswers
       .sort(function(el) { return Math.random() - 0.5; })
       .map(function(el) {
         return '<label class="is_not_checked should_be_' 
@@ -35,7 +37,7 @@ module.exports = ({ card, tags }) => {
         ev.target.parentElement.classList[isChecked ? 'add' : 'remove']('is_checked');
         ev.target.parentElement.classList[isChecked ? 'remove' : 'add']('is_not_checked');
         ev.target.setAttribute("checked", isChecked);
-        window.memoryCards['${cardId}'] = questionContainer.innerHTML;
+        setItem('${cardId}', questionContainer.innerHTML)
     });
   </script>
   <style>
@@ -57,7 +59,7 @@ module.exports = ({ card, tags }) => {
     <p>${card.comment}</p>
     <script>
       contentWrapper.classList.add('checked');
-      delete window.memoryCards['${cardId}'];
+      removeItem('${cardId}');
     </script>
   `;
 

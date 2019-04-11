@@ -15,8 +15,7 @@ function getItem(key) {
   // eslint-disable-next-line no-var
   var value;
   try {
-    const jsonValue = window.sessionStorage.getItem(key);
-    value = JSON.parse(jsonValue);
+    value = JSON.parse(window.sessionStorage.getItem(key));
   } catch (e) {
     value = window.memoryCards[key];
   }

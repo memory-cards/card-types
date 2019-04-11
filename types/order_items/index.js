@@ -1,3 +1,6 @@
+const storageHelpers = require('fs')
+  .readFileSync(`${__dirname}/../../utils/cardUtils/storageHelpers.js`)
+  .toString();
 const getUniqueId = require('../../utils/getUniqueId');
 
 module.exports = ({ card, tags }) => {
@@ -36,11 +39,10 @@ module.exports = ({ card, tags }) => {
     <button id="${cardId}_checkBtn">Check</button>
     
     <script>
+      window.memoryCards = window.memoryCards || {};
+
+      ${storageHelpers}
       var _el;
-      
-      if (!window.memoryCards) {
-          window.memoryCards = {};
-      }
     
       function getCardAnswersHTML() {
         var cardAnswers = ${JSON.stringify(card.answers)};
@@ -61,7 +63,7 @@ module.exports = ({ card, tags }) => {
       }
       
       var questionContainer = document.querySelector('.questions-wrapper');
-      questionContainer.innerHTML = window.memoryCards['${cardId}'] || getCardAnswersHTML();
+      questionContainer.innerHTML = getItem('${cardId}') || getCardAnswersHTML();
       
       function dragOver(e) {
         var node = isBefore(_el, e.target) ? e.target : e.target.nextSibling;
@@ -70,7 +72,7 @@ module.exports = ({ card, tags }) => {
     
       function dragEnd() {
         _el = null;
-        window.memoryCards['${cardId}'] = questionContainer.innerHTML;
+        setItem('${cardId}', questionContainer.innerHTML)
       }
     
       function dragStart(e) {
@@ -102,7 +104,7 @@ module.exports = ({ card, tags }) => {
     
       var checkBtn = document.querySelector('#${cardId}_checkBtn');
       checkBtn.addEventListener('click', checkAnswer);
-      window.memoryCards['${cardId}'] = questionContainer.innerHTML;
+      setItem('${cardId}', questionContainer.innerHTML)
     </script>
   `;
 
@@ -110,7 +112,7 @@ module.exports = ({ card, tags }) => {
     <p>${card.comment}</p>
     <script>
       checkAnswer();
-      delete window.memoryCards['${cardId}'];
+      removeItem('${cardId}');
     </script>
   `;
 

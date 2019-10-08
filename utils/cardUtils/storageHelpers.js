@@ -31,3 +31,9 @@ function removeItem(key) {
   }
   delete window.memoryCards[key];
 }
+
+module.exports = {
+  getItem,
+  removeItem,
+  setItem,
+};

@@ -39,9 +39,10 @@ module.exports = ({ card, tags }) => {
     <script>
       window.memoryCards = window.memoryCards || {};
 
-      ${helpers.getItem}
-      ${helpers.setItem}
-      ${helpers.removeItem}
+      var getItem = ${helpers.getItem};
+      var setItem = ${helpers.setItem};
+      var removeItem = ${helpers.removeItem};
+      
       var _el;
     
       function getCardAnswersHTML() {

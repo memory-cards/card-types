@@ -19,9 +19,9 @@ module.exports = ({ card, tags }) => {
 
       window.memoryCards = window.memoryCards || {};
 
-      ${helpers.getItem}
-      ${helpers.setItem}
-      ${helpers.removeItem}
+      var getItem = ${helpers.getItem};
+      var setItem = ${helpers.setItem};
+      var removeItem = ${helpers.removeItem};
 
       var question = document.querySelector('#question');
       question.innerHTML = getItem('${cardGuessesId}') || card.question.replace(emptyGuessMarkRegexp, getEmptyGuessItem());

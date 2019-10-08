@@ -13,9 +13,9 @@ module.exports = ({ card, tags }) => {
   <script>
     window.memoryCards = window.memoryCards || {};
 
-    ${helpers.getItem}
-    ${helpers.setItem}
-    ${helpers.removeItem}
+    var getItem = ${helpers.getItem};
+    var setItem = ${helpers.setItem};
+    var removeItem = ${helpers.removeItem};
     
     var questionContainer = document.querySelector('.questions-wrapper');
     var cardAnswers = ${JSON.stringify(card.answers)};

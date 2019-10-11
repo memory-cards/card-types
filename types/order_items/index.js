@@ -6,13 +6,28 @@ module.exports = ({ card, tags }) => {
 
   const front = `
     <style>
+      html {
+        font-size: 150%;
+      }
+      
+      @media only screen and (max-device-width: 600px) {
+        html {
+          font-size: 70%;
+        }
+      }
+
       #${cardId}_wrapper.checked {
-        border: 2px solid lightgray;
         pointer-events: none;
       }
+
+      #${cardId}_wrapper.checked li {
+        background-color: rgb(132, 233, 162);
+        border-color: white;
+        border-radius: 6px;
+      }
     
-      li[draggable].error {
-        border-color: red;
+      #${cardId}_wrapper.checked li.error {
+        background-color: rgb(226, 107, 107);
       }
     
       li[draggable] {

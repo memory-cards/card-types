@@ -42,16 +42,25 @@ module.exports = ({ card, tags }) => {
     });
   </script>
   <style>
+    html {
+      font-size: 150%;
+    }
+    
+    @media only screen and (max-device-width: 600px) {
+      html {
+        font-size: 70%;
+      }
+    }
+
     #${cardId}_wrapper.checked {
-      border: 1px solid lightgray;
       pointer-events: none;
     }
     .questions-wrapper { text-align: left; }
     .checked .should_be_checked.is_not_checked {
-      border: 1px solid forestgreen;
+      background-color: rgb(132, 233, 162);
     }
     .checked .should_be_unchecked.is_checked {
-      border: 1px solid rgb(255, 146, 146);
+      background-color: rgb(226, 107, 107);
     }
   </style>
   `;

@@ -151,8 +151,11 @@ module.exports = ({ card, tags }) => {
       }
         
       #${cardId}_wrapper.checked {
-        border: 1px solid lightgray;
         pointer-events: none;
+      }
+
+      #${cardId}_wrapper.checked + button {
+        visibility: hidden;
       }
 
       #question {
@@ -204,7 +207,7 @@ module.exports = ({ card, tags }) => {
 
       .answer-mark {
         opacity: 1;
-        left: 5px;
+        left: -15px;
         position: absolute;
         color: green;
       }

@@ -20,6 +20,10 @@ module.exports = ({ card, tags }) => {
         pointer-events: none;
       }
 
+      #${cardId}_wrapper.checked + button {
+        visibility: hidden;
+      }
+
       #${cardId}_wrapper.checked li {
         background-color: rgb(132, 233, 162);
         border-color: white;

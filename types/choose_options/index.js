@@ -55,8 +55,11 @@ module.exports = ({ card, tags }) => {
     #${cardId}_wrapper.checked {
       pointer-events: none;
     }
+    #${cardId}_wrapper.checked + button {
+      visibility: hidden;
+    }
     .questions-wrapper { text-align: left; }
-    .checked .should_be_checked.is_not_checked {
+    .checked .should_be_checked {
       background-color: rgb(132, 233, 162);
     }
     .checked .should_be_unchecked.is_checked {

@@ -1,9 +1,6 @@
 module.exports = ({ card, tags }) => {
-  const back = `
-    <p class="wrapper">
-      ${card.comment}
-    </p>
-    
+  const front = `
+    ${card.question}
     <style>
       html {
         font-size: 150%;
@@ -17,12 +14,17 @@ module.exports = ({ card, tags }) => {
 
       .wrapper {
         text-align: left
-      }  
+      }
     </style>
+  `;
+  const back = `
+    <p class="wrapper">
+      ${card.comment}
+    </p>
   `;
 
   return {
-    front: card.question,
+    front,
     back,
     tags: tags || [],
   };

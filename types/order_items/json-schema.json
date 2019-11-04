@@ -29,7 +29,14 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string"
+            "type": "object",
+            "required": ["text"],
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         },
         "comment": {

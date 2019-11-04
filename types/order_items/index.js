@@ -74,7 +74,7 @@ module.exports = ({ card, tags }) => {
               + 'data-index="' + cardAnswers.indexOf(el) + '" '
               + 'ondragover="dragOver(event)" '
               + 'ondragstart="dragStart(event)">'
-              + el
+              + el.text
               + '</li>';
           })
           .join('');

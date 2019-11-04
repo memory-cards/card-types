@@ -1,3 +1,5 @@
+<!-- @format -->
+
 # Choose options
 
 It should provide some description text and number of options. User have to sort options in proper order.
@@ -34,12 +36,22 @@ Should give a card with 5 sortable lines and button to check.
   card: {
     question: 'Order items to get a <b>SOLID</b>',
     answers: [
-      "a class should have only a single responsibility (i.e. changes to only one part of the software's specification should be able to affect the specification of the class)",
-      "software entities … should be open for extension, but closed for modification.",
-      "objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program.",
-      "many client-specific interfaces are better than one general-purpose interface.",
-      'one should "depend upon abstractions, [not] concretions."'
-      ],
+      {
+        text: "a class should have only a single responsibility (i.e. changes to only one part of the software's specification should be able to affect the specification of the class)"
+      },
+      {
+        text: "software entities … should be open for extension, but closed for modification."
+      },
+      {
+        text: "objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program."
+      },
+      {
+        text: "many client-specific interfaces are better than one general-purpose interface."
+      },
+      {
+        text: 'one should "depend upon abstractions, [not] concretions."'
+      }
+    ],
     comment: '<b>SOLID</b> is: <ol>\
     <li>Single responsibility principle</li>\
     <li>Open/closed principle</li>\

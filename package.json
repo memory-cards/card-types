@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "anki-apkg-export": "^4.0.2",
-    "json5": "^2.1.0",
+    "json5": "^2.2.2",
     "jsonschema": "^1.2.4"
   },
   "husky": {
